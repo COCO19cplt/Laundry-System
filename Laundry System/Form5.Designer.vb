@@ -26,7 +26,6 @@ Partial Class Form5
         Me.TabPage1 = New System.Windows.Forms.TabPage()
         Me.Label2 = New System.Windows.Forms.Label()
         Me.Label1 = New System.Windows.Forms.Label()
-        Me.Button2 = New System.Windows.Forms.Button()
         Me.Button1 = New System.Windows.Forms.Button()
         Me.DateTimePicker1 = New System.Windows.Forms.DateTimePicker()
         Me.DataGridView1 = New System.Windows.Forms.DataGridView()
@@ -67,7 +66,6 @@ Partial Class Form5
         '
         Me.TabPage1.Controls.Add(Me.Label2)
         Me.TabPage1.Controls.Add(Me.Label1)
-        Me.TabPage1.Controls.Add(Me.Button2)
         Me.TabPage1.Controls.Add(Me.Button1)
         Me.TabPage1.Controls.Add(Me.DateTimePicker1)
         Me.TabPage1.Controls.Add(Me.DataGridView1)
@@ -98,22 +96,13 @@ Partial Class Form5
         Me.Label1.TabIndex = 5
         Me.Label1.Text = "Customer"
         '
-        'Button2
-        '
-        Me.Button2.Location = New System.Drawing.Point(81, 449)
-        Me.Button2.Name = "Button2"
-        Me.Button2.Size = New System.Drawing.Size(143, 31)
-        Me.Button2.TabIndex = 4
-        Me.Button2.Text = "Save Order"
-        Me.Button2.UseVisualStyleBackColor = True
-        '
         'Button1
         '
-        Me.Button1.Location = New System.Drawing.Point(81, 370)
+        Me.Button1.Location = New System.Drawing.Point(81, 449)
         Me.Button1.Name = "Button1"
-        Me.Button1.Size = New System.Drawing.Size(145, 42)
-        Me.Button1.TabIndex = 3
-        Me.Button1.Text = "Start Order"
+        Me.Button1.Size = New System.Drawing.Size(143, 31)
+        Me.Button1.TabIndex = 4
+        Me.Button1.Text = "Save Order"
         Me.Button1.UseVisualStyleBackColor = True
         '
         'DateTimePicker1
@@ -291,7 +280,6 @@ Partial Class Form5
     Friend WithEvents TabPage1 As TabPage
     Friend WithEvents Label2 As Label
     Friend WithEvents Label1 As Label
-    Friend WithEvents Button2 As Button
     Friend WithEvents Button1 As Button
     Friend WithEvents DateTimePicker1 As DateTimePicker
     Friend WithEvents DataGridView1 As DataGridView

@@ -53,61 +53,68 @@ Public Class Form5
     ' TAB1: Start New Order
     ' ────────────────────────────────
     Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
+        Dim tx As MySqlTransaction = Nothing
+
         Try
             conn.Open()
+            tx = conn.BeginTransaction()
 
-            ' Start order
+            ' 1) Insert the LaundryOrder
             Dim custID = ComboBox1.SelectedValue
-            query = $"INSERT INTO LaundryOrder (CustomerID, OrderDate) VALUES ({custID}, '{DateTimePicker1.Value:yyyy-MM-dd HH:mm:ss}')"
-            cmd = New MySqlCommand(query, conn)
+            cmd = New MySqlCommand(
+                $"INSERT INTO LaundryOrder (CustomerID, OrderDate) 
+                  VALUES ({custID}, '{DateTimePicker1.Value:yyyy-MM-dd HH:mm:ss}')",
+                conn, tx)
             cmd.ExecuteNonQuery()
 
-            ' Get new OrderID
-            cmd = New MySqlCommand("SELECT LAST_INSERT_ID()", conn)
+            ' 2) Grab the new OrderID
+            cmd = New MySqlCommand("SELECT LAST_INSERT_ID()", conn, tx)
             currentOrderID = Convert.ToInt32(cmd.ExecuteScalar())
 
-            ' Load services into grid
-            cmd = New MySqlCommand("SELECT ServiceID, ServiceName, UnitPrice FROM Service", conn)
-            da = New MySqlDataAdapter(cmd)
-            Dim dtSvc As New DataTable
-            da.Fill(dtSvc)
-            dtSvc.Columns.Add("Quantity", GetType(Decimal))
-            DataGridView1.DataSource = dtSvc
+            ' 3) Prepare a single command object for details
+            cmd = New MySqlCommand() With {
+                .Connection = conn,
+                .Transaction = tx
+            }
 
-            MsgBox("Order started. ID = " & currentOrderID)
+            ' 4) Loop through each row and insert details
+            For Each row As DataGridViewRow In DataGridView1.Rows
+                Dim raw = row.Cells("Quantity").Value
+                Dim qty As Decimal
+                If raw Is Nothing OrElse raw Is DBNull.Value Then Continue For
+                If Not Decimal.TryParse(raw.ToString(), qty) OrElse qty <= 0 Then Continue For
+
+                Dim sid = row.Cells("ServiceID").Value
+                cmd.CommandText =
+                  $"INSERT INTO OrderDetail (OrderID, ServiceID, Quantity) 
+                     VALUES ({currentOrderID}, {sid}, {qty})"
+                cmd.ExecuteNonQuery()
+            Next
+
+            ' 5) All good → commit transaction
+            tx.Commit()
+            MsgBox($"Order {currentOrderID} and its details saved successfully.")
         Catch ex As Exception
-            MsgBox("Error: " & ex.Message)
+            ' Something failed → roll back
+            If tx IsNot Nothing Then
+                Try
+                    tx.Rollback()
+                    MsgBox("Transaction failed and was rolled back.")
+                Catch rbEx As Exception
+                    MsgBox("Rollback failed: " & rbEx.Message)
+                End Try
+            End If
+            MsgBox("Error saving order: " & ex.Message)
         Finally
             conn.Close()
         End Try
     End Sub
+
 
     ' ────────────────────────────────
     ' TAB1: Save Order Details
     ' ────────────────────────────────
-    Private Sub Button2_Click(sender As Object, e As EventArgs) Handles Button2.Click
-        Try
-            conn.Open()
 
-            For Each row As DataGridViewRow In DataGridView1.Rows
-                Dim qty As Decimal
-                If Not Decimal.TryParse(Convert.ToString(row.Cells("Quantity").Value), qty) OrElse qty <= 0 Then
-                    Continue For
-                End If
-
-                Dim sid = row.Cells("ServiceID").Value
-                query = $"INSERT INTO OrderDetail (OrderID, ServiceID, Quantity) VALUES ({currentOrderID}, {sid}, '{qty}')"
-                cmd = New MySqlCommand(query, conn)
-                cmd.ExecuteNonQuery()
-            Next
-
-            MsgBox("Order details saved.")
-        Catch ex As Exception
-            MsgBox("Error: " & ex.Message)
-        Finally
-            conn.Close()
-        End Try
-    End Sub
 
     ' ────────────────────────────────
     ' Load Pending Orders for TAB2

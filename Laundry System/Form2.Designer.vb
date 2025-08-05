@@ -33,11 +33,11 @@ Partial Class Form2
         Me.Button2.BackColor = System.Drawing.Color.Transparent
         Me.Button2.FlatStyle = System.Windows.Forms.FlatStyle.Popup
         Me.Button2.Font = New System.Drawing.Font("Showcard Gothic", 8.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Button2.Location = New System.Drawing.Point(744, 61)
+        Me.Button2.Location = New System.Drawing.Point(774, 54)
         Me.Button2.Name = "Button2"
         Me.Button2.Size = New System.Drawing.Size(204, 49)
         Me.Button2.TabIndex = 11
-        Me.Button2.Text = "AVAIL SERVICES"
+        Me.Button2.Text = "Create Account"
         Me.Button2.UseVisualStyleBackColor = False
         '
         'TextBox2
@@ -62,11 +62,12 @@ Partial Class Form2
         '
         Me.Button1.BackColor = System.Drawing.Color.Transparent
         Me.Button1.FlatStyle = System.Windows.Forms.FlatStyle.Popup
-        Me.Button1.Location = New System.Drawing.Point(344, 467)
+        Me.Button1.Location = New System.Drawing.Point(393, 469)
         Me.Button1.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.Button1.Name = "Button1"
         Me.Button1.Size = New System.Drawing.Size(196, 40)
         Me.Button1.TabIndex = 8
+        Me.Button1.Text = "Sign In"
         Me.Button1.UseVisualStyleBackColor = False
         '
         'Form2
