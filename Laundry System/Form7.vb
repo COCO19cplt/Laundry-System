@@ -56,26 +56,22 @@ Public Class Form7
     ' Button1: ADD TO CART
     ' ───────────────────────────────────────────
     Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
-        If ComboBox1.Text = "" Then
-            MsgBox("Select a service.")
-            Return
-        End If
-        If NumericUpDown1.Value <= 0 Then
-            MsgBox("Quantity must be greater than zero.")
-            Return
-        End If
-
-        ' Parse service name and unit price
+        ' … existing validation …
         Dim parts = ComboBox1.Text.Split("|"c)
-        Dim svcName As String = parts(0)
-        Dim price As Decimal = Convert.ToDecimal(parts(1))
-        Dim qty As Decimal = NumericUpDown1.Value
-        Dim subtotalValue As Decimal = price * qty
+        Dim svcName = parts(0)
+        Dim price = Convert.ToDecimal(parts(1))
+        Dim qty = NumericUpDown1.Value
+        Dim subtotalValue = price * qty
 
-        ' Add to cart grid
+        ' Add to grid
         DataGridView1.Rows.Add(svcName, qty, subtotalValue.ToString("F2"))
         UpdateTotal()
+
+        ' Remove it from ComboBox1 so it can't be re-added
+        ComboBox1.Items.Remove(ComboBox1.Text)
+        ComboBox1.Text = ""        ' clear selection
     End Sub
+
 
 
     ' ───────────────────────────────────────────

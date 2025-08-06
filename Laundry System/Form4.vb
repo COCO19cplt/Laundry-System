@@ -352,9 +352,9 @@ Public Class Form4
                 RefreshCustomers()
             Case 2
                 RefreshExpenses()
-            Case 3
-                ' Transactions tab: load all orders
-                Button13.PerformClick()
+            Case 3  ' Transactions tab
+                RefreshTransactions()
+
             Case 4
                 ' Sales Report tab: reset inputs & clear results
                 DateTimePicker1.Value = DateTime.Today
@@ -379,6 +379,34 @@ Public Class Form4
 
     Private Sub Form4_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         RefreshServices() ' Load default tab on startup
+    End Sub
+    Private Sub RefreshTransactions()
+        Try
+            conn.Open()
+            query = "SELECT 
+                    o.OrderID,
+                    o.OrderDate,
+                    c.Name AS CustomerName,
+                    d.ServiceID,
+                    s.ServiceName,
+                    d.Quantity,
+                    (d.Quantity * s.UnitPrice) AS Subtotal,
+                    o.Status
+                 FROM LaundryOrder o
+                   JOIN Customer c    ON o.CustomerID = c.CustomerID
+                   JOIN OrderDetail d ON o.OrderID      = d.OrderID
+                   JOIN Service s     ON d.ServiceID    = s.ServiceID
+                 ORDER BY o.OrderID, s.ServiceName;"
+            cmd = New MySqlCommand(query, conn)
+            da = New MySqlDataAdapter(cmd)
+            ds = New DataSet()
+            da.Fill(ds, "Transactions")
+            DataGridView4.DataSource = ds.Tables("Transactions")
+        Catch ex As Exception
+            MsgBox("Error loading transactions: " & ex.Message)
+        Finally
+            conn.Close()
+        End Try
     End Sub
 
     ' Refresh the orders grid when Button13 is clicked
@@ -664,6 +692,10 @@ Public Class Form4
     End Sub
 
     Private Sub DataGridView6_CellContentClick(sender As Object, e As DataGridViewCellEventArgs) Handles DataGridView6.CellContentClick
+
+    End Sub
+
+    Private Sub DateTimePicker3_ValueChanged(sender As Object, e As EventArgs) Handles DateTimePicker3.ValueChanged
 
     End Sub
 End Class
